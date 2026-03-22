@@ -12,12 +12,10 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            cursor: none; /* Hiding default cursor for custom one */
+            cursor: none; /* Hidden for PC, overridden for mobile below */
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
+        html { scroll-behavior: smooth; }
 
         body {
             background-color: #050511;
@@ -29,41 +27,34 @@
         }
 
         /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #050511; }
-        ::-webkit-scrollbar-thumb { background: #00d4ff; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb { background: #00d4ff; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #ff00ff; }
 
-        /* --- Custom Cursor --- */
+        /* --- Custom Cursor (PC Only) --- */
         .cursor-dot, .cursor-outline {
-            position: fixed;
-            top: 0; left: 0;
-            transform: translate(-50%, -50%);
-            border-radius: 50%;
-            z-index: 9999;
-            pointer-events: none;
+            position: fixed; top: 0; left: 0; transform: translate(-50%, -50%);
+            border-radius: 50%; z-index: 9999; pointer-events: none;
         }
-        .cursor-dot {
-            width: 8px; height: 8px;
-            background-color: #00d4ff;
-        }
-        .cursor-outline {
-            width: 40px; height: 40px;
-            border: 2px solid rgba(255, 0, 255, 0.5);
-            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        .cursor-dot { width: 8px; height: 8px; background-color: #00d4ff; }
+        .cursor-outline { width: 40px; height: 40px; border: 2px solid rgba(255, 0, 255, 0.5); transition: width 0.2s, height 0.2s, background-color 0.2s; }
+
+        /* Disable custom cursor on Touch Devices */
+        @media (hover: none) and (pointer: coarse) {
+            * { cursor: auto !important; }
+            .cursor-dot, .cursor-outline { display: none !important; }
         }
 
         /* --- Ambient Background --- */
         .ambient-blobs {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 0;
-            overflow: hidden; filter: blur(70px);
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 0; overflow: hidden; filter: blur(70px);
         }
         .blob { position: absolute; opacity: 0.5; animation: morph 15s ease-in-out infinite alternate; }
-        .blob-1 { background: linear-gradient(45deg, #00d4ff, #0044ff); width: 50vw; height: 50vw; top: -10%; left: -10%; }
-        .blob-2 { background: linear-gradient(45deg, #ff00ff, #ff0055); width: 45vw; height: 45vw; bottom: -10%; right: -10%; animation-delay: -5s; }
-        .blob-3 { background: linear-gradient(45deg, #00ff88, #0088ff); width: 40vw; height: 40vw; top: 40%; left: 30%; animation-delay: -10s; }
+        .blob-1 { background: linear-gradient(45deg, #00d4ff, #0044ff); width: 60vw; height: 60vw; top: -10%; left: -10%; }
+        .blob-2 { background: linear-gradient(45deg, #ff00ff, #ff0055); width: 55vw; height: 55vw; bottom: -10%; right: -10%; animation-delay: -5s; }
+        .blob-3 { background: linear-gradient(45deg, #00ff88, #0088ff); width: 50vw; height: 50vw; top: 40%; left: 30%; animation-delay: -10s; }
 
         @keyframes morph {
             0% { border-radius: 40% 60% 70% 30% / 40% 40% 60% 50%; transform: rotate(0deg) scale(1); }
@@ -79,105 +70,95 @@
 
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 10; }
 
-        /* --- Scroll Reveal Animation Classes --- */
-        .reveal {
-            opacity: 0;
-            transform: translateY(50px);
-            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
-        }
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        /* --- Scroll Reveal Animation --- */
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
 
         /* --- Hero Section --- */
         .hero { height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; position: relative; }
         
         .hero-content h1 {
-            font-family: 'Syncopate', sans-serif; font-size: clamp(3rem, 8vw, 7rem); font-weight: 700; text-transform: uppercase;
-            letter-spacing: 5px; color: transparent; -webkit-text-stroke: 2px rgba(255, 255, 255, 0.9); position: relative; margin-bottom: 2rem; display: inline-block;
+            font-family: 'Syncopate', sans-serif; font-size: clamp(2rem, 8vw, 7rem); font-weight: 700; text-transform: uppercase;
+            letter-spacing: 2px; color: transparent; -webkit-text-stroke: 2px rgba(255, 255, 255, 0.9); position: relative; margin-bottom: 2rem; display: inline-block;
         }
         .hero-content h1::before, .hero-content h1::after {
             content: 'PRAXCODEZ'; position: absolute; top: 0; left: 0; width: 100%; height: 100%; -webkit-text-stroke: 0; z-index: -1;
             mix-blend-mode: screen; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); pointer-events: none;
         }
-        .hero-content h1::before { color: #00d4ff; text-shadow: 0 0 20px rgba(0, 212, 255, 0.6); transform: translate(6px, 6px); }
-        .hero-content h1::after { color: #ff00ff; text-shadow: 0 0 20px rgba(255, 0, 255, 0.6); transform: translate(-6px, -6px); }
-        .hero-content:hover h1::before { transform: translate(15px, -15px); }
-        .hero-content:hover h1::after { transform: translate(-15px, 15px); }
+        .hero-content h1::before { color: #00d4ff; text-shadow: 0 0 20px rgba(0, 212, 255, 0.6); transform: translate(4px, 4px); }
+        .hero-content h1::after { color: #ff00ff; text-shadow: 0 0 20px rgba(255, 0, 255, 0.6); transform: translate(-4px, -4px); }
+        .hero-content:hover h1::before { transform: translate(10px, -10px); }
+        .hero-content:hover h1::after { transform: translate(-10px, 10px); }
 
         .roles {
-            font-size: clamp(1rem, 3vw, 1.5rem); font-family: 'Orbitron', monospace; background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.2); padding: 10px 25px; border-radius: 50px; display: inline-block;
-            letter-spacing: 3px; margin-bottom: 2.5rem; box-shadow: 0 0 20px rgba(0, 212, 255, 0.2); backdrop-filter: blur(10px);
+            font-size: clamp(0.8rem, 3vw, 1.2rem); font-family: 'Orbitron', monospace; background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2); padding: 10px 20px; border-radius: 50px; display: inline-block;
+            letter-spacing: 2px; margin-bottom: 2.5rem; box-shadow: 0 0 20px rgba(0, 212, 255, 0.2); backdrop-filter: blur(10px);
             animation: float 4s ease-in-out infinite;
         }
 
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
-        .scroll-down { position: absolute; bottom: 40px; font-size: 2rem; color: rgba(255,255,255,0.5); animation: bounce 2s infinite; }
-        @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-20px); } 60% { transform: translateY(-10px); } }
+        .scroll-down { position: absolute; bottom: 30px; font-size: 1.5rem; color: rgba(255,255,255,0.5); animation: bounce 2s infinite; text-decoration: none; }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-15px); } 60% { transform: translateY(-8px); } }
 
         /* --- Typography Headings --- */
-        .section-title { font-family: 'Syncopate', sans-serif; font-size: clamp(2rem, 5vw, 4rem); margin-bottom: 4rem; text-align: center; letter-spacing: 2px; }
+        .section-title { font-family: 'Syncopate', sans-serif; font-size: clamp(1.8rem, 5vw, 4rem); margin-bottom: 3rem; text-align: center; letter-spacing: 1px; }
         .section-title span { color: #00d4ff; text-shadow: 0 0 15px rgba(0,212,255,0.5); }
 
         /* --- About Section --- */
-        .about { padding: 8rem 0; }
+        .about { padding: 6rem 0; }
         .about-content {
             background: rgba(20, 20, 35, 0.4); backdrop-filter: blur(20px); border-left: 4px solid #ff00ff;
-            padding: 4rem; border-radius: 0 20px 20px 0; max-width: 900px; margin: 0 auto;
+            padding: 3rem; border-radius: 0 20px 20px 0; max-width: 900px; margin: 0 auto;
             box-shadow: 20px 20px 50px rgba(0,0,0,0.5); position: relative; overflow: hidden;
         }
-        .about-content::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
-            background: linear-gradient(90deg, #ff00ff, transparent);
-        }
-        .about-text { font-size: 1.2rem; line-height: 1.8; color: #d0d0d0; margin-bottom: 1.5rem; font-weight: 300; }
+        .about-content::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, #ff00ff, transparent); }
+        .about-text { font-size: 1.1rem; line-height: 1.8; color: #d0d0d0; margin-bottom: 1.5rem; font-weight: 300; }
         .highlight { color: #fff; font-weight: 600; font-family: 'Orbitron', monospace; letter-spacing: 1px; }
 
         /* --- Skills Section --- */
-        .skills { padding: 8rem 0; }
-        .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 3rem; }
+        .skills { padding: 6rem 0; }
+        .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; }
         
         .skill-card {
             background: rgba(20, 20, 35, 0.4); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px; padding: 3.5rem 2.5rem; transition: all 0.4s ease; text-align: center; position: relative; overflow: hidden;
+            border-radius: 20px; padding: 2.5rem 2rem; transition: all 0.4s ease; text-align: center; position: relative; overflow: hidden;
         }
-        .skill-card:hover { transform: translateY(-15px); border-color: rgba(0, 212, 255, 0.4); box-shadow: 0 20px 40px rgba(0, 212, 255, 0.2); }
-        .skill-card i { font-size: 3.5rem; color: #fff; margin-bottom: 2rem; transition: all 0.4s ease; text-shadow: 0 0 20px #00d4ff; }
-        .skill-card:hover i { transform: scale(1.2) rotate(10deg); color: #00d4ff; }
-        .skill-card h3 { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; margin-bottom: 1rem; letter-spacing: 2px; }
-        .skill-card p { color: #a0a0b0; line-height: 1.6; }
+        .skill-card:hover { transform: translateY(-10px); border-color: rgba(0, 212, 255, 0.4); box-shadow: 0 15px 30px rgba(0, 212, 255, 0.2); }
+        .skill-card i { font-size: 3rem; color: #fff; margin-bottom: 1.5rem; transition: all 0.4s ease; text-shadow: 0 0 20px #00d4ff; }
+        .skill-card:hover i { transform: scale(1.1) rotate(10deg); color: #00d4ff; }
+        .skill-card h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; margin-bottom: 1rem; letter-spacing: 1px; }
+        .skill-card p { color: #a0a0b0; line-height: 1.6; font-size: 0.95rem; }
 
         /* --- Projects Section --- */
-        .projects { padding: 8rem 0; }
-        .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2.5rem; }
+        .projects { padding: 6rem 0; }
+        .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
         
         .project-card {
-            height: 300px; border-radius: 20px; position: relative; overflow: hidden;
+            height: 280px; border-radius: 20px; position: relative; overflow: hidden;
             background: linear-gradient(45deg, #111, #222); border: 1px solid rgba(255,255,255,0.05);
-            display: flex; align-items: flex-end; padding: 2rem; transition: 0.5s;
+            display: flex; align-items: flex-end; padding: 1.5rem; transition: 0.5s; cursor: pointer;
         }
         .project-card::before {
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); z-index: 1; transition: 0.5s;
         }
         .project-card:hover { transform: scale(1.02); border-color: #00ff88; box-shadow: 0 0 30px rgba(0,255,136,0.2); }
-        .project-card:hover::before { background: linear-gradient(to top, rgba(0,255,136,0.4), transparent); }
+        .project-card:hover::before { background: linear-gradient(to top, rgba(0,255,136,0.5), transparent); }
         
         .project-info { position: relative; z-index: 2; transform: translateY(20px); transition: 0.5s; opacity: 0.8; }
         .project-card:hover .project-info { transform: translateY(0); opacity: 1; }
-        .project-info h3 { font-family: 'Orbitron', monospace; font-size: 1.5rem; margin-bottom: 0.5rem; color: #fff; }
+        .project-info h3 { font-family: 'Orbitron', monospace; font-size: 1.3rem; margin-bottom: 0.5rem; color: #fff; }
         .project-info p { color: #ccc; font-size: 0.9rem; margin-bottom: 1rem; }
-        .project-tags span { background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; margin-right: 5px; }
+        .project-tags span { background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; margin-right: 5px; display: inline-block; margin-bottom: 5px; }
 
         /* --- Contact Section --- */
-        .contact-section { padding: 8rem 0 12rem; }
+        .contact-section { padding: 6rem 0 8rem; }
         .contact {
             background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0)); backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 25px; padding: 4rem; max-width: 600px; margin: 0 auto;
-            text-align: center; transition: transform 0.3s ease; position: relative; overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 20px; padding: 3rem 2rem; max-width: 500px; margin: 0 auto;
+            text-align: center; transition: transform 0.3s ease; position: relative; overflow: hidden; cursor: pointer;
         }
         .contact::after {
             content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
@@ -185,14 +166,22 @@
             animation: spin 4s linear infinite; opacity: 0; transition: 0.5s; z-index: -1;
         }
         .contact:hover::after { opacity: 1; }
-        .contact:hover { transform: scale(1.05); border-color: #ff00ff; box-shadow: 0 0 40px rgba(255,0,255,0.3); }
-        .contact i { font-size: 3.5rem; margin-bottom: 1.5rem; color: #ff00ff; animation: pulse 2s infinite; }
-        .contact h3 { font-family: 'Syncopate', sans-serif; margin-bottom: 1rem; font-size: 2.5rem; }
-        .contact span { font-family: 'Orbitron', monospace; color: #d0d0d0; font-size: 1.2rem; }
+        .contact:hover { transform: scale(1.02); border-color: #ff00ff; box-shadow: 0 0 30px rgba(255,0,255,0.3); }
+        .contact i { font-size: 3rem; margin-bottom: 1.2rem; color: #ff00ff; animation: pulse 2s infinite; }
+        .contact h3 { font-family: 'Syncopate', sans-serif; margin-bottom: 1rem; font-size: 2rem; }
+        .contact span { font-family: 'Orbitron', monospace; color: #d0d0d0; font-size: 1rem; word-break: break-all; }
         
         @keyframes spin { 100% { transform: rotate(360deg); } }
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
 
+        /* --- Mobile Specific Overrides --- */
+        @media (max-width: 768px) {
+            .about-content { padding: 2rem; border-radius: 15px; }
+            .hero-content h1 { letter-spacing: 0px; font-size: clamp(2.5rem, 12vw, 4rem); }
+            /* Force project info to be visible on touch devices since hover isn't natural */
+            .project-info { transform: translateY(0); opacity: 1; }
+            .project-card::before { background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0.2)); }
+        }
     </style>
 </head>
 <body>
@@ -212,7 +201,7 @@
             <div class="hero-content">
                 <h1>Praxcodez</h1>
                 <br>
-                <div class="roles">CODER • DESIGNER • WEB MAKER</div>
+                <div class="roles">CODER â€¢ DESIGNER â€¢ WEB MAKER</div>
             </div>
         </div>
         <a href="#about" class="scroll-down"><i class="fas fa-chevron-down"></i></a>
@@ -226,7 +215,7 @@
                     I construct digital experiences that live at the absolute intersection of logic and art. Driven by a relentless curiosity for <span class="highlight">Science and Technology</span>, I approach problem-solving with rigorous precision, building systems that are as structurally sound underneath as they are visually striking on the surface.
                 </p>
                 <p class="about-text">
-                    My signature is a <span class="highlight">dark, immersive aesthetic</span>—clean, mysterious, and highly performant. Whether I am architecting complex backend logic or refining pixel-perfect interfaces, my goal is to create environments that pull the user entirely into the digital world.
+                    My signature is a <span class="highlight">dark, immersive aesthetic</span>â€”clean, mysterious, and highly performant. Whether I am architecting complex backend logic or refining pixel-perfect interfaces, my goal is to create environments that pull the user entirely into the digital world.
                 </p>
             </div>
         </div>
@@ -299,35 +288,35 @@
         const cursorDot = document.getElementById('cursor-dot');
         const cursorOutline = document.getElementById('cursor-outline');
 
-        window.addEventListener('mousemove', function(e) {
-            const posX = e.clientX;
-            const posY = e.clientY;
+        // Only run mouse listener if device supports hover (avoids mobile errors)
+        if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+            window.addEventListener('mousemove', function(e) {
+                const posX = e.clientX;
+                const posY = e.clientY;
 
-            // Instantly move the dot
-            cursorDot.style.left = `${posX}px`;
-            cursorDot.style.top = `${posY}px`;
+                cursorDot.style.left = `${posX}px`;
+                cursorDot.style.top = `${posY}px`;
 
-            // Add a slight delay to the outline for a smooth trailing effect
-            cursorOutline.animate({
-                left: `${posX}px`,
-                top: `${posY}px`
-            }, { duration: 500, fill: "forwards" });
-        });
-
-        // Expand cursor when hovering over clickable elements
-        const interactables = document.querySelectorAll('a, .skill-card, .contact, .project-card, .scroll-down');
-        interactables.forEach(el => {
-            el.addEventListener('mouseenter', () => {
-                cursorOutline.style.width = '60px';
-                cursorOutline.style.height = '60px';
-                cursorOutline.style.backgroundColor = 'rgba(0, 212, 255, 0.1)';
+                cursorOutline.animate({
+                    left: `${posX}px`,
+                    top: `${posY}px`
+                }, { duration: 500, fill: "forwards" });
             });
-            el.addEventListener('mouseleave', () => {
-                cursorOutline.style.width = '40px';
-                cursorOutline.style.height = '40px';
-                cursorOutline.style.backgroundColor = 'transparent';
+
+            const interactables = document.querySelectorAll('a, .skill-card, .contact, .project-card, .scroll-down');
+            interactables.forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    cursorOutline.style.width = '60px';
+                    cursorOutline.style.height = '60px';
+                    cursorOutline.style.backgroundColor = 'rgba(0, 212, 255, 0.1)';
+                });
+                el.addEventListener('mouseleave', () => {
+                    cursorOutline.style.width = '40px';
+                    cursorOutline.style.height = '40px';
+                    cursorOutline.style.backgroundColor = 'transparent';
+                });
             });
-        });
+        }
 
         // --- Scroll Reveal Animation Logic ---
         function reveal() {
@@ -335,7 +324,7 @@
             for (var i = 0; i < reveals.length; i++) {
                 var windowHeight = window.innerHeight;
                 var elementTop = reveals[i].getBoundingClientRect().top;
-                var elementVisible = 100; // Triggers when element is 100px into the viewport
+                var elementVisible = 80; 
 
                 if (elementTop < windowHeight - elementVisible) {
                     reveals[i].classList.add("active");
@@ -343,8 +332,7 @@
             }
         }
         window.addEventListener("scroll", reveal);
-        // Trigger once on load to catch elements already in view
-        reveal();
+        reveal(); // Trigger once on load
     </script>
 </body>
 </html>
