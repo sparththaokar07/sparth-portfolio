@@ -97,14 +97,42 @@
             .nav-toggle { display: flex; }
         }
 
-        /* --- Custom Cursor (PC Only) --- */
-        .cursor-dot, .cursor-outline {
-            position: fixed; top: 0; left: 0; transform: translate(-50%, -50%);
-            border-radius: 50%; z-index: 9999; pointer-events: none;
-        }
-        .cursor-dot { width: 8px; height: 8px; background-color: #00d4ff; }
-        .cursor-outline { width: 40px; height: 40px; border: 2px solid rgba(255, 0, 255, 0.5); transition: width 0.2s, height 0.2s, background-color 0.2s; }
+        // --- Custom Interactive Cursor Logic ---
+        const cursorDot = document.getElementById('cursor-dot');
+        const cursorOutline = document.getElementById('cursor-outline');
 
+        // Only run mouse listener if device supports hover
+        if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+            window.addEventListener('mousemove', function(e) {
+                const posX = e.clientX;
+                const posY = e.clientY;
+
+                // Move the chevron instantly
+                cursorDot.style.left = `${posX}px`;
+                cursorDot.style.top = `${posY}px`;
+
+                // Trail the aura smoothly
+                cursorOutline.animate({
+                    left: `${posX}px`,
+                    top: `${posY}px`
+                }, { duration: 400, fill: "forwards" });
+            });
+
+            // Expand and spin on hover
+            const interactables = document.querySelectorAll('a, .skill-card, .contact, .project-card, .scroll-down, .btn, input, textarea');
+            interactables.forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    cursorOutline.style.width = '80px';
+                    cursorOutline.style.height = '80px';
+                    cursorDot.style.transform = 'translate(-50%, -50%) rotate(225deg)'; // Spin arrow up
+                });
+                el.addEventListener('mouseleave', () => {
+                    cursorOutline.style.width = '40px';
+                    cursorOutline.style.height = '40px';
+                    cursorDot.style.transform = 'translate(-50%, -50%) rotate(45deg)'; // Spin arrow down
+                });
+            });
+        }
         /* Disable custom cursor on Touch Devices */
         @media (hover: none) and (pointer: coarse) {
             * { cursor: auto !important; }
