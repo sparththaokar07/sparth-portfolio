@@ -1,862 +1,594 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Praxcodez | Digital Creative & Developer</title>
-    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Orbitron:wght@400;700;900&family=Bebas+Neue&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* --- Base & Reset --- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            cursor: none; /* Hidden for PC, overridden for mobile below */
-        }
-
-        html { scroll-behavior: smooth; }
-
-        body {
-            background-color: #050511;
-            color: #ffffff;
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
-            min-height: 100vh;
-            position: relative;
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #050511; }
-        ::-webkit-scrollbar-thumb { background: #00d4ff; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #ff00ff; }
-
-        /* --- Navigation Bar --- */
-        nav {
-            position: fixed; top: 0; width: 100%; z-index: 1000;
-            background: rgba(5, 5, 17, 0.8); backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(0, 212, 255, 0.1);
-            padding: 1rem 0; transition: all 0.3s ease;
-        }
-
-        nav.scrolled {
-            background: rgba(5, 5, 17, 0.95);
-            padding: 0.7rem 0;
-            border-bottom: 1px solid rgba(0, 212, 255, 0.3);
-        }
-
-        nav .container {
-            display: flex; justify-content: space-between; align-items: center;
-        }
-
-        .nav-logo {
-            text-decoration: none; transition: all 0.3s ease;
-            display: inline-flex; align-items: center; flex-shrink: 0;
-        }
-
-        .nav-logo img {
-            height: 40px; width: auto; display: block;
-            transition: filter 0.3s ease, transform 0.3s ease;
-        }
-
-        .nav-logo:hover img {
-            filter: drop-shadow(0 0 14px rgba(0, 212, 255, 0.6));
-            transform: translateY(-1px);
-        }
-
-        .nav-links {
-            display: flex; gap: 2.5rem; list-style: none;
-        }
-
-        .nav-links a {
-            color: #d0d0d0; text-decoration: none; font-family: 'Inter', sans-serif;
-            font-weight: 500; transition: all 0.3s ease; position: relative;
-            letter-spacing: 0.5px;
-        }
-
-        .nav-links a::after {
-            content: ''; position: absolute; bottom: -5px; left: 0; width: 0;
-            height: 2px; background: linear-gradient(90deg, #00d4ff, #ff00ff);
-            transition: width 0.3s ease;
-        }
-
-        .nav-links a:hover { color: #00d4ff; }
-        .nav-links a:hover::after { width: 100%; }
-
-        .nav-toggle {
-            display: none; flex-direction: column; cursor: pointer;
-        }
-
-        .nav-toggle span {
-            width: 25px; height: 3px; background: #00d4ff;
-            border-radius: 2px; margin: 5px 0; transition: all 0.3s ease;
-        }
-
-        @media (max-width: 768px) {
-            .nav-links { display: none; position: absolute; top: 60px; left: 0; right: 0;
-                flex-direction: column; gap: 1rem; background: rgba(5, 5, 17, 0.95);
-                padding: 2rem; border-bottom: 1px solid rgba(0, 212, 255, 0.2); }
-            .nav-links.active { display: flex; }
-            .nav-toggle { display: flex; }
-            .nav-logo img { height: 32px; max-width: 60vw; }
-        }
-
-       /* --- Custom Cursor (PC Only) --- */
-        .cursor-dot, .cursor-outline {
-            position: fixed; top: 0; left: 0; 
-            z-index: 9999; pointer-events: none;
-        }
-
-        /* Core Glowing Diamond */
-        .cursor-dot {
-            width: 6px; height: 6px;
-            background-color: #00d4ff;
-            transform: translate(-50%, -50%) rotate(45deg);
-            box-shadow: 0 0 10px #00d4ff;
-            transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
-        }
-
-        /* Rotating Cyber Square */
-        .cursor-outline {
-            width: 36px; height: 36px;
-            border: 1px solid #ff00ff;
-            box-shadow: 0 0 15px rgba(255, 0, 255, 0.4), inset 0 0 15px rgba(255, 0, 255, 0.4);
-            /* Bouncy transition for when it changes shape */
-            transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
-                        height 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
-                        border-radius 0.3s, border-color 0.3s, box-shadow 0.3s;
-            animation: cyber-spin 4s linear infinite;
-        }
-
-        @keyframes cyber-spin {
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            100% { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-
-        /* Disable custom cursor on Touch Devices */
-        @media (hover: none) and (pointer: coarse) {
-            * { cursor: auto !important; }
-            .cursor-dot, .cursor-outline { display: none !important; }
-        }
-
-        /* --- Ambient Background --- */
-        .ambient-blobs {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 0; overflow: hidden; filter: blur(70px);
-        }
-        .blob { position: absolute; opacity: 0.5; animation: morph 15s ease-in-out infinite alternate; }
-        .blob-1 { background: linear-gradient(45deg, #00d4ff, #0044ff); width: 60vw; height: 60vw; top: -10%; left: -10%; }
-        .blob-2 { background: linear-gradient(45deg, #ff00ff, #ff0055); width: 55vw; height: 55vw; bottom: -10%; right: -10%; animation-delay: -5s; }
-        .blob-3 { background: linear-gradient(45deg, #00ff88, #0088ff); width: 50vw; height: 50vw; top: 40%; left: 30%; animation-delay: -10s; }
-
-        @keyframes morph {
-            0% { border-radius: 40% 60% 70% 30% / 40% 40% 60% 50%; transform: rotate(0deg) scale(1); }
-            50% { border-radius: 70% 30% 50% 50% / 30% 30% 70% 70%; transform: rotate(180deg) scale(1.1); }
-            100% { border-radius: 30% 70% 40% 60% / 60% 70% 30% 40%; transform: rotate(360deg) scale(0.9); }
-        }
-
-        .cyber-grid {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px; pointer-events: none; z-index: 1;
-        }
-
-        /* --- NEW: Criss-Cross Cyber Lines --- */
-        .cyber-lines {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 1; overflow: hidden;
-        }
-        .cyber-line { position: absolute; opacity: 0.4; }
-        
-        /* Cyan Lines */
-        .line-h1 { width: 100%; height: 2px; background: #00d4ff; box-shadow: 0 0 15px #00d4ff; top: -10%; left: 0; animation: scanH 8s linear infinite; }
-        .line-v1 { width: 2px; height: 100%; background: #00d4ff; box-shadow: 0 0 15px #00d4ff; top: 0; left: -10%; animation: scanV 12s linear infinite; animation-delay: 2s; }
-        .line-d1 { width: 150%; height: 2px; background: #00d4ff; box-shadow: 0 0 15px #00d4ff; top: 0; left: -25%; transform-origin: top left; animation: scanD1 15s linear infinite; }
-        
-        /* Magenta Lines */
-        .line-h2 { width: 100%; height: 2px; background: #ff00ff; box-shadow: 0 0 15px #ff00ff; top: -10%; left: 0; animation: scanH 10s linear infinite reverse; animation-delay: 4s; }
-        .line-v2 { width: 2px; height: 100%; background: #ff00ff; box-shadow: 0 0 15px #ff00ff; top: 0; right: -10%; animation: scanVRight 14s linear infinite; }
-        .line-d2 { width: 150%; height: 2px; background: #ff00ff; box-shadow: 0 0 15px #ff00ff; top: 0; right: -25%; transform-origin: top right; animation: scanD2 18s linear infinite; animation-delay: 5s; }
-
-        /* Hardware Accelerated Animation Keyframes */
-        @keyframes scanH { 0% { transform: translateY(0); } 100% { transform: translateY(120vh); } }
-        @keyframes scanV { 0% { transform: translateX(0); } 100% { transform: translateX(120vw); } }
-        @keyframes scanVRight { 0% { transform: translateX(0); } 100% { transform: translateX(-120vw); } }
-        @keyframes scanD1 { 0% { transform: rotate(45deg) translateY(-50vh); } 100% { transform: rotate(45deg) translateY(150vh); } }
-        @keyframes scanD2 { 0% { transform: rotate(-45deg) translateY(-50vh); } 100% { transform: rotate(-45deg) translateY(150vh); } }
-
-        /* Lower opacity on mobile to keep it from being distracting */
-        @media (max-width: 768px) {
-            .cyber-line { opacity: 0.2; }
-        }
-
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 10; }
-
-        /* --- Scroll Reveal Animation --- */
-        .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
-        .reveal.active { opacity: 1; transform: translateY(0); }
-
-        /* --- Hero Section --- */
-        .hero { min-height: calc(100vh - 60px); padding-top: 60px; display: flex; align-items: center; justify-content: center; text-align: center; position: relative; }
-        
-        .hero-logo {
-            width: min(88vw, 640px); max-width: 640px; height: auto;
-            margin: 0 auto 2rem; display: block;
-            filter: drop-shadow(0 0 24px rgba(0, 212, 255, 0.35));
-        }
-
-        .roles {
-            font-size: clamp(0.8rem, 3vw, 1.2rem); font-family: 'Orbitron', monospace; background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.2); padding: 10px 20px; border-radius: 50px; display: inline-block;
-            letter-spacing: 2px; margin-bottom: 2.5rem; box-shadow: 0 0 20px rgba(0, 212, 255, 0.2); backdrop-filter: blur(10px);
-            animation: float 4s ease-in-out infinite;
-        }
-
-        .hero-cta {
-            display: inline-flex; gap: 1.5rem; margin-top: 2rem; flex-wrap: wrap; justify-content: center;
-        }
-
-        .btn {
-            padding: 0.9rem 2rem; border-radius: 50px; text-decoration: none; font-family: 'Inter', sans-serif;
-            font-weight: 600; letter-spacing: 1px; transition: all 0.3s ease; border: none; cursor: pointer;
-            position: relative; overflow: hidden; display: inline-flex; align-items: center; gap: 0.5rem;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #00d4ff, #0088ff); color: #000;
-            box-shadow: 0 0 25px rgba(0, 212, 255, 0.4);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px); box-shadow: 0 0 40px rgba(0, 212, 255, 0.6);
-        }
-
-        .btn-secondary {
-            background: transparent; color: #00d4ff; border: 2px solid #00d4ff;
-        }
-
-        .btn-secondary:hover {
-            background: #00d4ff; color: #000; box-shadow: 0 0 25px rgba(0, 212, 255, 0.3);
-        }
-
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-
-        .scroll-down { position: absolute; bottom: 30px; font-size: 1.5rem; color: rgba(255,255,255,0.5); animation: bounce 2s infinite; text-decoration: none; }
-        @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-15px); } 60% { transform: translateY(-8px); } }
-
-        /* --- Typography Headings --- */
-        .section-title { font-family: 'Syncopate', sans-serif; font-size: clamp(1.8rem, 5vw, 4rem); margin-bottom: 3rem; text-align: center; letter-spacing: 1px; }
-        .section-title span { color: #00d4ff; text-shadow: 0 0 15px rgba(0,212,255,0.5); }
-
-        /* --- About Section --- */
-        .about { padding: 6rem 0; }
-        .about-content {
-            background: rgba(20, 20, 35, 0.4); backdrop-filter: blur(20px); border-left: 4px solid #ff00ff;
-            padding: 3rem; border-radius: 0 20px 20px 0; max-width: 900px; margin: 0 auto;
-            box-shadow: 20px 20px 50px rgba(0,0,0,0.5); position: relative; overflow: hidden;
-        }
-        .about-content::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, #ff00ff, transparent); }
-        .about-text { font-size: 1.1rem; line-height: 1.8; color: #d0d0d0; margin-bottom: 1.5rem; font-weight: 300; }
-        .highlight { color: #fff; font-weight: 600; font-family: 'Orbitron', monospace; letter-spacing: 1px; }
-
-        /* --- Skills Section --- */
-        .skills { padding: 6rem 0; }
-        .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; }
-        
-        .skill-card {
-            background: rgba(20, 20, 35, 0.4); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px; padding: 2.5rem 2rem; transition: all 0.4s ease; text-align: center; position: relative; overflow: hidden;
-        }
-        .skill-card:hover { transform: translateY(-10px); border-color: rgba(0, 212, 255, 0.4); box-shadow: 0 15px 30px rgba(0, 212, 255, 0.2); }
-        .skill-card i { font-size: 3rem; color: #fff; margin-bottom: 1.5rem; transition: all 0.4s ease; text-shadow: 0 0 20px #00d4ff; }
-        .skill-card:hover i { transform: scale(1.1) rotate(10deg); color: #00d4ff; }
-        .skill-card h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; margin-bottom: 1rem; letter-spacing: 1px; }
-        .skill-card p { color: #a0a0b0; line-height: 1.6; font-size: 0.95rem; margin-bottom: 1.5rem; }
-
-        .skill-items {
-            display: flex; flex-direction: column; gap: 1rem; text-align: left;
-        }
-
-        .skill-item {
-            font-size: 0.85rem;
-        }
-
-        .skill-label {
-            display: flex; justify-content: space-between; margin-bottom: 0.3rem;
-            color: #a0a0b0; font-family: 'Inter', sans-serif;
-        }
-
-        .skill-bar {
-            background: rgba(255, 255, 255, 0.05); height: 6px; border-radius: 3px;
-            overflow: hidden; border: 1px solid rgba(0, 212, 255, 0.2);
-        }
-
-        .skill-progress {
-            height: 100%; background: linear-gradient(90deg, #00d4ff, #0088ff);
-            border-radius: 3px; transition: width 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        .skill-card:hover .skill-progress {
-            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
-        }
-
-        /* --- Projects Section --- */
-        .projects { padding: 6rem 0; }
-        .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
-        
-        .project-card {
-            height: 320px; border-radius: 20px; position: relative; overflow: hidden;
-            background: linear-gradient(135deg, #111127, #1a1a2e); border: 1px solid rgba(255,255,255,0.05);
-            display: flex; align-items: flex-end; padding: 2rem; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
-            cursor: pointer;
-        }
-
-        .project-image {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-size: cover; background-position: center; opacity: 0.3;
-            transition: all 0.5s ease; z-index: 0;
-        }
-
-        .project-card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.9) 100%); 
-            z-index: 1; transition: all 0.5s ease;
-        }
-
-        .project-card:hover { 
-            transform: translateY(-10px) scale(1.02); 
-            border-color: #00ff88; 
-            box-shadow: 0 20px 40px rgba(0,255,136,0.2), inset 0 0 20px rgba(0,212,255,0.05);
-        }
-
-        .project-card:hover .project-image { 
-            opacity: 0.5; 
-            transform: scale(1.1);
-        }
-
-        .project-card:hover::before { 
-            background: linear-gradient(180deg, rgba(0,212,255,0.2) 0%, rgba(0,0,0,0.95) 100%); 
-        }
-        
-        .project-info { 
-            position: relative; z-index: 2; transform: translateY(10px); 
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); opacity: 0.9; 
-            width: 100%;
-        }
-
-        .project-card:hover .project-info { 
-            transform: translateY(0); opacity: 1; 
-        }
-
-        .project-info h3 { 
-            font-family: 'Syncopate', monospace; font-size: 1.4rem; margin-bottom: 0.7rem; 
-            color: #00d4ff; font-weight: 700; letter-spacing: 1px;
-        }
-
-        .project-info p { 
-            color: #e0e0ff; font-size: 0.95rem; margin-bottom: 1rem; 
-            line-height: 1.5; font-weight: 300;
-        }
-
-        .project-tags { 
-            display: flex; flex-wrap: wrap; gap: 0.5rem; 
-        }
-
-        .project-tags span { 
-            background: rgba(0, 212, 255, 0.15); 
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; 
-            color: #00d4ff; font-family: 'Orbitron', monospace;
-            letter-spacing: 0.5px; transition: all 0.3s ease;
-        }
-
-        .project-tags span:hover {
-            background: rgba(0, 212, 255, 0.3);
-            border-color: #00d4ff;
-        }
-
-        .project-link {
-            display: inline-flex; align-items: center; gap: 0.5rem;
-            color: #00ff88; text-decoration: none; font-size: 0.9rem;
-            font-weight: 600; margin-top: 1rem; transition: all 0.3s ease;
-        }
-
-        .project-link:hover {
-            gap: 1rem; color: #00ff88;
-        }
-
-        /* --- Contact Section --- */
-        .contact-section { padding: 6rem 0 8rem; }
-
-        .contact-content { max-width: 600px; margin: 0 auto; }
-
-        .contact {
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(255, 0, 255, 0.03)); 
-            backdrop-filter: blur(20px); border: 2px solid rgba(0, 212, 255, 0.2);
-            border-radius: 20px; padding: 3rem 2rem; text-align: center; 
-            position: relative; overflow: hidden;
-        }
-
-        .contact::after {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: conic-gradient(from 0deg, transparent, rgba(0, 212, 255, 0.1), transparent);
-            animation: spin 4s linear infinite; opacity: 0; transition: 0.5s; z-index: -1;
-        }
-
-        .contact:hover { border-color: #00d4ff; box-shadow: 0 0 30px rgba(0, 212, 255, 0.15); }
-        .contact:hover::after { opacity: 1; }
-
-        .contact-title { font-family: 'Syncopate', sans-serif; font-size: 2.2rem; margin-bottom: 0.5rem; color: #00d4ff; }
-        .contact-subtitle { color: #a0a0b0; font-size: 0.95rem; margin-bottom: 2rem; font-weight: 300; }
-
-        .form-group {
-            margin-bottom: 1.5rem; text-align: left;
-        }
-
-        .form-group label {
-            display: block; margin-bottom: 0.5rem; color: #d0d0d0;
-            font-family: 'Inter', sans-serif; font-weight: 500; font-size: 0.9rem;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%; padding: 0.8rem 1rem; background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(0, 212, 255, 0.2); color: #fff; border-radius: 10px;
-            font-family: 'Inter', sans-serif; font-size: 0.95rem; transition: all 0.3s ease;
-        }
-
-        .form-group input::placeholder,
-        .form-group textarea::placeholder {
-            color: rgba(208, 208, 208, 0.5);
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none; background: rgba(255, 255, 255, 0.08);
-            border-color: #00d4ff; box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
-        }
-
-        .form-group textarea {
-            resize: vertical; min-height: 120px;
-        }
-
-        .contact-method {
-            display: flex; justify-content: center; gap: 2rem; margin-top: 2rem;
-            padding-top: 2rem; border-top: 1px solid rgba(0, 212, 255, 0.2);
-        }
-
-        .contact-item {
-            text-align: center;
-        }
-
-        .contact-item i {
-            font-size: 1.8rem; color: #00d4ff; margin-bottom: 0.5rem;
-            display: block; transition: all 0.3s ease;
-        }
-
-        .contact-item span {
-            display: block; color: #d0d0d0; font-size: 0.9rem;
-            font-family: 'Inter', sans-serif; word-break: break-all;
-        }
-
-        .contact-item a {
-            color: #00d4ff; text-decoration: none; transition: all 0.3s ease;
-        }
-
-        .contact-item a:hover {
-            color: #00ff88;
-        }
-        
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-
-        /* --- Mobile Specific Overrides --- */
-        @media (max-width: 768px) {
-            .about-content { padding: 2rem; border-radius: 15px; }
-            .hero-logo { max-width: min(82vw, 460px); margin-bottom: 1.5rem; }
-            .hero-cta { flex-direction: column; gap: 1rem; }
-            .btn { width: 100%; justify-content: center; }
-            /* Force project info to be visible on touch devices since hover isn't natural */
-            .project-info { transform: translateY(0); opacity: 1; }
-            .project-card::before { background: linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.95)); }
-            .project-card:hover { transform: scale(1.01); }
-            .section-title { font-size: clamp(1.5rem, 7vw, 2.5rem); }
-            .contact-method { flex-direction: column; gap: 1rem; }
-            .skill-items { text-align: center; }
-            .skill-label { justify-content: center; }
-        }
-
-        @media (max-width: 480px) {
-            .container { padding: 0 15px; }
-            .roles { font-size: 0.75rem; padding: 8px 15px; }
-            .hero { margin-top: 50px; height: auto; padding: 4rem 0; }
-            .nav-logo img { height: 32px; }
-            .skill-card { padding: 1.5rem 1rem; }
-            .project-card { padding: 1.5rem; height: 280px; }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Praxinvoicex | Professional Billing Suite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #090c12;
+      --bg-elev: #121722;
+      --card: #161d2a;
+      --muted: #96a3b8;
+      --text: #edf3ff;
+      --accent: #4f8cff;
+      --accent-2: #00c2a9;
+      --danger: #ff6b6b;
+      --line: #253149;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 0%, #1a2232, transparent 35%),
+        radial-gradient(circle at 90% 10%, #162034, transparent 35%),
+        var(--bg);
+      min-height: 100vh;
+    }
+
+    .container {
+      width: min(1120px, 92vw);
+      margin: 32px auto;
+    }
+
+    .titlebar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: clamp(1.4rem, 2.3vw, 2rem);
+      letter-spacing: 0.4px;
+    }
+
+    .brand p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .pill {
+      border: 1px solid var(--line);
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.01);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0)), var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    .panel {
+      padding: 18px;
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: 1.02rem;
+      letter-spacing: 0.2px;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin: 0 0 14px;
+      line-height: 1.45;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    label {
+      font-size: 0.85rem;
+      color: #ced7e7;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid #2b3956;
+      background: var(--bg-elev);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font: inherit;
+    }
+
+    textarea { min-height: 72px; resize: vertical; }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    button {
+      border: 1px solid transparent;
+      background: linear-gradient(180deg, #5f95ff, #3f74df);
+      color: #fff;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      background: #1a2438;
+      border-color: #2b3956;
+      color: #d9e4f8;
+    }
+
+    button.ghost {
+      background: transparent;
+      border-color: #2b3956;
+      color: var(--muted);
+    }
+
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .otp-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+    }
+
+    .status {
+      margin-top: 10px;
+      border: 1px solid #264f3e;
+      color: #b8f6dd;
+      background: rgba(0, 194, 169, 0.08);
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 0.84rem;
+      display: none;
+    }
+
+    .status.error {
+      border-color: #5c2a3a;
+      color: #ffc8d5;
+      background: rgba(255, 107, 107, 0.08);
+    }
+
+    .preview {
+      padding: 24px;
+      background: #fff;
+      color: #101827;
+      border-radius: 14px;
+      margin: 12px;
+      min-height: 560px;
+      position: relative;
+    }
+
+    .invoice-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #dbe2f0;
+      padding-bottom: 12px;
+      margin-bottom: 12px;
+      gap: 16px;
+    }
+
+    .invoice-logo {
+      width: 86px;
+      height: 86px;
+      border: 1px dashed #d0d8e7;
+      border-radius: 8px;
+      object-fit: contain;
+      display: none;
+      padding: 4px;
+    }
+
+    .meta, .bill-to {
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      font-size: 0.92rem;
+    }
+
+    .table th, .table td {
+      border-bottom: 1px solid #e4eaf5;
+      padding: 10px 8px;
+      text-align: left;
+    }
+
+    .table th { font-size: 0.83rem; text-transform: uppercase; color: #5d6b84; }
+    .table td:last-child, .table th:last-child { text-align: right; }
+
+    .totals {
+      margin-left: auto;
+      width: min(320px, 100%);
+      border-top: 1px solid #d5ddeb;
+      padding-top: 10px;
+      font-size: 0.92rem;
+    }
+
+    .totals div {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .totals strong { font-size: 1rem; }
+
+    .note {
+      margin-top: 18px;
+      border-top: 1px dashed #ccd6e6;
+      padding-top: 10px;
+      color: #42506c;
+      font-size: 0.86rem;
+    }
+
+    .footer-tag {
+      margin-top: 18px;
+      font-size: 0.8rem;
+      color: #667691;
+      text-align: center;
+    }
+
+    .share-link {
+      background: #131a28;
+      border: 1px dashed #2b3956;
+      color: #b7c5de;
+      padding: 8px 10px;
+      border-radius: 10px;
+      margin-top: 10px;
+      font-size: 0.82rem;
+      display: none;
+      word-break: break-all;
+    }
+
+    @media (max-width: 980px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      body { background: #fff; }
+      .no-print { display: none !important; }
+      .container { width: 100%; margin: 0; }
+      .card { border: none; box-shadow: none; }
+      .preview { margin: 0; min-height: auto; border-radius: 0; }
+    }
+  </style>
 </head>
 <body>
-
-    <div class="cursor-dot" id="cursor-dot"></div>
-    <div class="cursor-outline" id="cursor-outline"></div>
-
-    <!-- Navigation Bar -->
-    <nav id="navbar">
-        <div class="container">
-            <a href="#home" class="nav-logo"><img src="assets/praxcodez-logo.svg" alt="Praxcodez logo"></a>
-            <ul class="nav-links" id="navLinks">
-                <li><a href="#home">HOME</a></li>
-                <li><a href="#about">ABOUT</a></li>
-                <li><a href="#skills">SKILLS</a></li>
-                <li><a href="#projects">PROJECTS</a></li>
-                <li><a href="#contact">CONTACT</a></li>
-            </ul>
-            <button
-                type="button"
-                class="nav-toggle"
-                id="navToggle"
-                aria-label="Toggle navigation menu"
-                aria-expanded="false"
-                aria-controls="navLinks">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-        </div>
-    </nav>
-
-    <div class="ambient-blobs">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-        <div class="blob blob-3"></div>
-    </div>
-    <div class="cyber-grid"></div>
-
-    <div class="cyber-lines">
-        <div class="cyber-line line-h1"></div>
-        <div class="cyber-line line-v1"></div>
-        <div class="cyber-line line-d1"></div>
-        <div class="cyber-line line-h2"></div>
-        <div class="cyber-line line-v2"></div>
-        <div class="cyber-line line-d2"></div>
+  <div class="container">
+    <div class="titlebar no-print">
+      <div class="brand">
+        <h1>Praxinvoicex</h1>
+        <p>Professional dark invoicing platform (INR) with OTP login, account switching, and PDF/print/share support.</p>
+      </div>
+      <span class="pill">Currency: INR (₹)</span>
     </div>
 
-    <section class="hero" id="home">
-        <div class="container reveal active">
-            <div class="hero-content">
-                <img class="hero-logo" src="assets/praxcodez-logo.svg" alt="Praxcodez logo">
-                <br>
-                <div class="roles">CODER • GRAPHIC DESIGNER • WEB MAKER</div>
-                <div class="hero-cta">
-                    <a href="#contact" class="btn btn-primary">Get In Touch <i class="fas fa-arrow-right"></i></a>
-                    <a href="#projects" class="btn btn-secondary">View My Work <i class="fas fa-external-link-alt"></i></a>
-                </div>
+    <div class="grid">
+      <aside class="card panel no-print">
+        <section>
+          <h2>1) Login / Sign In</h2>
+          <p class="hint">Use email or mobile number. OTP verification is required before invoice actions are enabled.</p>
+          <div class="field">
+            <label for="identity">Email or Mobile Number</label>
+            <input id="identity" placeholder="name@company.com or +91XXXXXXXXXX" />
+          </div>
+          <div class="otp-row">
+            <input id="otp" placeholder="Enter 6-digit OTP" maxlength="6" />
+            <button id="sendOtp">Send OTP</button>
+          </div>
+          <div class="actions" style="margin-top:8px;">
+            <button class="secondary" id="verifyOtp">Verify OTP</button>
+            <button class="ghost" id="resetSession">Reset</button>
+          </div>
+          <div class="status" id="authStatus"></div>
+        </section>
+
+        <hr style="border-color:#2b3956; border-style:solid; border-width:1px 0 0; margin:16px 0;" />
+
+        <section>
+          <h2>2) Account Profile</h2>
+          <p class="hint">One mobile/email can hold multiple business accounts.</p>
+          <div class="field">
+            <label for="accountSelect">Business Account</label>
+            <select id="accountSelect" disabled>
+              <option>Login first to load accounts</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="companyName">Company Name</label>
+            <input id="companyName" placeholder="Your Company Pvt Ltd" />
+          </div>
+          <div class="field">
+            <label for="logoUpload">Business Logo (optional)</label>
+            <input id="logoUpload" type="file" accept="image/*" />
+          </div>
+        </section>
+
+        <hr style="border-color:#2b3956; border-style:solid; border-width:1px 0 0; margin:16px 0;" />
+
+        <section>
+          <h2>3) Invoice Details</h2>
+          <div class="row">
+            <div class="field">
+              <label for="invoiceNo">Invoice No.</label>
+              <input id="invoiceNo" value="PX-2026-001" />
             </div>
-        </div>
-        <a href="#about" class="scroll-down"><i class="fas fa-chevron-down"></i></a>
-    </section>
-
-    <section class="about" id="about">
-        <div class="container">
-            <h2 class="section-title reveal">THE <span>MIND</span> BEHIND THE CODE</h2>
-            <div class="about-content reveal">
-                <p class="about-text">
-                    I construct digital experiences that live at the absolute intersection of logic and art. Driven by a relentless curiosity for <span class="highlight">Science and Technology</span>, I approach problem-solving with rigorous precision, building systems that are as structurally sound underneath as they are visually striking on the surface.
-                </p>
-                <p class="about-text">
-                    My signature is a <span class="highlight">dark, immersive aesthetic</span>—clean, mysterious, and highly performant. Whether I am architecting complex backend logic or refining pixel-perfect interfaces, my goal is to create environments that pull the user entirely into the digital world.
-                </p>
+            <div class="field">
+              <label for="invoiceDate">Date</label>
+              <input id="invoiceDate" type="date" />
             </div>
-        </div>
-    </section>
-
-    <section class="skills" id="skills">
-        <div class="container">
-            <h2 class="section-title reveal">CREATIVE <span>MASTERY</span></h2>
-            <div class="skills-grid">
-                <div class="skill-card reveal" style="transition-delay: 0.1s;">
-                    <i class="fas fa-laptop-code"></i>
-                    <h3>CODE WARRIOR</h3>
-                    <p>Commanding languages to bend reality. Scalable logic, clean architecture, and unbreakable backend systems.</p>
-                    <div class="skill-items">
-                        <div class="skill-item">
-                            <div class="skill-label"><span>JavaScript</span><span>95%</span></div>
-                            <div class="skill-bar"><div class="skill-progress" style="width: 95%;"></div></div>
-                        </div>
-                        <div class="skill-item">
-                            <div class="skill-label"><span>React</span><span>90%</span></div>
-                            <div class="skill-bar"><div class="skill-progress" style="width: 90%;"></div></div>
-                        </div>
-                        <div class="skill-item">
-                            <div class="skill-label"><span>Node.js</span><span>88%</span></div>
-                            <div class="skill-bar"><div class="skill-progress" style="width: 88%;"></div></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="skill-card reveal" style="transition-delay: 0.2s;">
-                    <i class="fas fa-palette"></i>
-                    <h3>DARK AESTHETICS</h3>
-                    <p>Crafting visually arresting, high-contrast designs. UI/UX that prioritizes deep immersion and sleek typography.</p>
-                    <div class="skill-items">
-                        <div class="skill-item">
-                            <div class="skill-label"><span>UI Design</span><span>92%</span></div>
-                            <div class="skill-bar"><div class="skill-progress" style="width: 92%;"></div></div>
-                        </div>
-                        <div class="skill-item">
-                            <div class="skill-label"><span>CSS/SASS</span><span>94%</span></div>
-                            <div class="skill-bar"><div class="skill-progress" style="width: 94%;"></div></div>
-                        </div>
-                        <div class="skill-item">
-                            <div class="skill-label"><span>UX Design</span><span>85%</span></div>
-                            <div class="skill-bar"><div class="skill-progress" style="width: 85%;"></div></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="skill-card reveal" style="transition-delay: 0.3s;">
-                    <i class="fas fa-rocket"></i>
-                    <h3>DEPLOYMENT NINJA</h3>
-                    <p>Turning local code into global infrastructure. Cloud architecture, server management, and zero-downtime launches.</p>
-                    <div class="skill-items">
-                        <div class="skill-item">
-                            <div class="skill-label"><span>AWS</span><span>85%</span></div>
-                            <div class="skill-bar"><div class="skill-progress" style="width: 85%;"></div></div>
-                        </div>
-                        <div class="skill-item">
-                            <div class="skill-label"><span>Docker</span><span>88%</span></div>
-                            <div class="skill-bar"><div class="skill-progress" style="width: 88%;"></div></div>
-                        </div>
-                        <div class="skill-item">
-                            <div class="skill-label"><span>DevOps</span><span>87%</span></div>
-                            <div class="skill-bar"><div class="skill-progress" style="width: 87%;"></div></div>
-                        </div>
-                    </div>
-                </div>
+          </div>
+          <div class="field">
+            <label for="billTo">Bill To</label>
+            <textarea id="billTo" placeholder="Client Name\nAddress\nGSTIN"></textarea>
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="itemDesc">Item / Service</label>
+              <input id="itemDesc" value="Professional Services" />
             </div>
-        </div>
-    </section>
-
-    <section class="projects" id="projects">
-        <div class="container">
-            <h2 class="section-title reveal">DIGITAL <span>ARTIFACTS</span></h2>
-            <div class="projects-grid">
-                <div class="project-card reveal" style="transition-delay: 0.1s;">
-                    <div class="project-image" style="background: linear-gradient(135deg, #0d47a1, #1565c0);"></div>
-                    <div class="project-info">
-                        <h3>NEBULA OS</h3>
-                        <p>A web-based operating system interface built entirely with React and Framer Motion. Advanced animations and smooth interactions for an immersive desktop experience.</p>
-                        <div class="project-tags">
-                            <span>React</span>
-                            <span>Framer Motion</span>
-                            <span>TypeScript</span>
-                        </div>
-                        <a href="#" class="project-link">View Project <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
-                <div class="project-card reveal" style="transition-delay: 0.2s;">
-                    <div class="project-image" style="background: linear-gradient(135deg, #6a1b9a, #8e24aa);"></div>
-                    <div class="project-info">
-                        <h3>QUANTUM DATA</h3>
-                        <p>An interactive data visualization dashboard utilizing modern charting libraries. Real-time analytics with sleek dark UI and custom color schemes.</p>
-                        <div class="project-tags">
-                            <span>JavaScript</span>
-                            <span>D3.js</span>
-                            <span>API</span>
-                        </div>
-                        <a href="#" class="project-link">View Project <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
-                <div class="project-card reveal" style="transition-delay: 0.3s;">
-                    <div class="project-image" style="background: linear-gradient(135deg, #00695c, #00897b);"></div>
-                    <div class="project-info">
-                        <h3>VOID COMMERCE</h3>
-                        <p>A fully functional e-commerce backend built with scalable technologies. Complete payment integration, inventory management, and admin dashboard.</p>
-                        <div class="project-tags">
-                            <span>Node.js</span>
-                            <span>MongoDB</span>
-                            <span>Express</span>
-                        </div>
-                        <a href="#" class="project-link">View Project <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
+            <div class="field">
+              <label for="itemQty">Quantity</label>
+              <input id="itemQty" type="number" min="1" value="1" />
             </div>
-        </div>
-    </section>
-
-    <section class="contact-section" id="contact">
-        <div class="container">
-            <h2 class="section-title reveal">LET'S <span>CONNECT</span></h2>
-            <div class="contact-content reveal">
-                <div class="contact">
-                    <h3 class="contact-title">Get In Touch</h3>
-                    <p class="contact-subtitle">Have a project in mind? Let's create something amazing together.</p>
-                    
-                    <form id="contactForm" class="contact-form">
-                        <div class="form-group">
-                            <label for="name">Name</label>
-                            <input type="text" id="name" name="name" required placeholder="Your full name">
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" id="email" name="email" required placeholder="your.email@example.com">
-                        </div>
-                        <div class="form-group">
-                            <label for="message">Message</label>
-                            <textarea id="message" name="message" required placeholder="Tell me about your project..."></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Send Message <i class="fas fa-paper-plane"></i></button>
-                    </form>
-
-                    <div class="contact-method">
-                        <div class="contact-item">
-                            <i class="fas fa-envelope"></i>
-                            <span><a href="mailto:sparththaokar07@gmail.com">Email</a></span>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fas fa-phone"></i>
-                            <span><a href="tel:+919876543210">+91 XXXX XXX XXX</a></span>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>India</span>
-                        </div>
-                    </div>
-                </div>
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="itemRate">Rate (₹)</label>
+              <input id="itemRate" type="number" min="0" value="10000" />
             </div>
-        </div>
-    </section>
-
-    <footer style="text-align: center; padding: 3rem 0 2rem; position: relative; z-index: 10; border-top: 1px solid rgba(0, 212, 255, 0.1);">
-        <div class="container" style="margin-bottom: 1.5rem;">
-            <div style="display: flex; justify-content: center; gap: 2rem; margin-bottom: 1.5rem;">
-                <a href="#" style="color: #00d4ff; font-size: 1.3rem; transition: all 0.3s ease;" title="GitHub" aria-label="GitHub"><i class="fab fa-github"></i></a>
-                <a href="#" style="color: #00d4ff; font-size: 1.3rem; transition: all 0.3s ease;" title="LinkedIn" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
-                <a href="#" style="color: #00d4ff; font-size: 1.3rem; transition: all 0.3s ease;" title="Twitter" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                <a href="#" style="color: #00d4ff; font-size: 1.3rem; transition: all 0.3s ease;" title="Dribbble" aria-label="Dribbble"><i class="fab fa-dribbble"></i></a>
+            <div class="field">
+              <label for="taxPercent">Tax (%)</label>
+              <input id="taxPercent" type="number" min="0" step="0.01" value="18" />
             </div>
+          </div>
+          <div class="field">
+            <label for="notes">Notes</label>
+            <textarea id="notes" placeholder="Payment terms, UPI details, or thanks message."></textarea>
+          </div>
+
+          <div class="actions">
+            <button id="generateInvoice">Generate Invoice</button>
+            <button class="secondary" id="printInvoice">Printable</button>
+            <button class="secondary" id="downloadPdf">Download PDF</button>
+            <button class="ghost" id="createLink">Create Online Link</button>
+          </div>
+          <div class="share-link" id="shareLink"></div>
+        </section>
+      </aside>
+
+      <main class="card">
+        <div class="preview" id="invoicePreview">
+          <div class="invoice-head">
+            <div>
+              <h2 style="font-size:1.5rem; margin:0; color:#0e1d3f;">TAX INVOICE</h2>
+              <div class="meta" id="metaBlock"></div>
+            </div>
+            <img id="logoPreview" class="invoice-logo" alt="Business logo" />
+          </div>
+
+          <div class="row" style="grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div>
+              <h3 style="margin:0 0 6px; font-size:0.86rem; color:#5e6f8e; text-transform:uppercase;">From</h3>
+              <div class="bill-to" id="fromBlock"></div>
+            </div>
+            <div>
+              <h3 style="margin:0 0 6px; font-size:0.86rem; color:#5e6f8e; text-transform:uppercase;">Bill To</h3>
+              <div class="bill-to" id="toBlock">Client details will appear here.</div>
+            </div>
+          </div>
+
+          <table class="table">
+            <thead>
+              <tr><th>Description</th><th>Qty</th><th>Rate</th><th>Amount</th></tr>
+            </thead>
+            <tbody id="lineItems"></tbody>
+          </table>
+
+          <div class="totals" id="totals"></div>
+          <div class="note" id="noteBlock">Notes: -</div>
+          <div class="footer-tag">The project by Praxcedez</div>
         </div>
-        <p style="font-family: 'Orbitron', monospace; font-size: 0.85rem; color: #777; letter-spacing: 2px; text-transform: uppercase;">
-            Owned, Managed and Directed by <span style="color: #00d4ff; font-weight: 700; text-shadow: 0 0 10px rgba(0,212,255,0.6);">PARTH SHRIKANT THAOKAR</span>
-        </p>
-        <p style="font-size: 0.8rem; color: #555; margin-top: 1rem; letter-spacing: 0.5px;">© 2024 Praxcodez. All rights reserved.</p>
-    </footer>
+      </main>
+    </div>
+  </div>
 
-    <script>
-        // --- Navigation Toggle for Mobile ---
-        const navToggle = document.getElementById('navToggle');
-        const navLinks = document.getElementById('navLinks');
-        const navbar = document.getElementById('navbar');
+  <script>
+    const el = (id) => document.getElementById(id);
+    const authStatus = el('authStatus');
+    let verified = false;
+    let otpCode = null;
 
-        navToggle.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-        });
+    const accountsDb = {
+      default: [
+        { name: 'Praxinvoicex Consulting', address: 'Noida, Uttar Pradesh, India', gst: '09ABCDE1234F1Z5' },
+        { name: 'Praxinvoicex Studio', address: 'Bengaluru, Karnataka, India', gst: '29ABCDE1234F1Z8' },
+        { name: 'Praxinvoicex Retail', address: 'Mumbai, Maharashtra, India', gst: '27ABCDE1234F1Z6' }
+      ]
+    };
 
-        // Close menu when a link is clicked
-        document.querySelectorAll('.nav-links a').forEach(link => {
-            link.addEventListener('click', () => {
-                navLinks.classList.remove('active');
-            });
-        });
+    const today = new Date().toISOString().split('T')[0];
+    el('invoiceDate').value = today;
 
-        // --- Navbar Scroll Effect ---
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
-        });
+    function showStatus(msg, isError = false) {
+      authStatus.textContent = msg;
+      authStatus.classList.toggle('error', isError);
+      authStatus.style.display = 'block';
+    }
 
-        // --- Contact Form Submission ---
-        const contactForm = document.getElementById('contactForm');
-        if (contactForm) {
-            contactForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                
-                const name = document.getElementById('name').value;
-                const email = document.getElementById('email').value;
-                const message = document.getElementById('message').value;
-                
-                // Create mailto link with form data
-                const mailtoLink = `mailto:sparththaokar07@gmail.com?subject=Portfolio Contact from ${encodeURIComponent(name)}&body=${encodeURIComponent(`Name: ${name}\n\nEmail: ${email}\n\nMessage:\n${message}`)}`;
-                
-                window.location.href = mailtoLink;
-                
-                // Optional: Show success message
-                const btn = contactForm.querySelector('button[type="submit"]');
-                const originalText = btn.innerHTML;
-                btn.innerHTML = 'Message Sent! <i class="fas fa-check"></i>';
-                btn.style.background = 'linear-gradient(135deg, #00ff88, #00d4ff)';
-                
-                setTimeout(() => {
-                    btn.innerHTML = originalText;
-                    btn.style.background = '';
-                    contactForm.reset();
-                }, 3000);
-            });
-        }
+    function money(n) {
+      return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(Number(n || 0));
+    }
 
-        // --- Custom Interactive Cursor Logic ---
-        const cursorDot = document.getElementById('cursor-dot');
-        const cursorOutline = document.getElementById('cursor-outline');
+    function loadAccounts() {
+      const select = el('accountSelect');
+      select.innerHTML = '';
+      accountsDb.default.forEach((acc, idx) => {
+        const op = document.createElement('option');
+        op.value = idx;
+        op.textContent = acc.name;
+        select.appendChild(op);
+      });
+      select.disabled = false;
+      updateAccountDetails();
+    }
 
-        // Only run mouse listener if device supports hover (avoids mobile errors)
-        if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
-            window.addEventListener('mousemove', function(e) {
-                const posX = e.clientX;
-                const posY = e.clientY;
+    function updateAccountDetails() {
+      const selected = accountsDb.default[Number(el('accountSelect').value) || 0];
+      el('companyName').value = selected.name;
+      renderInvoice();
+    }
 
-                cursorDot.style.left = `${posX}px`;
-                cursorDot.style.top = `${posY}px`;
+    function renderInvoice() {
+      const company = el('companyName').value || 'Your Company';
+      const invNo = el('invoiceNo').value || '-';
+      const date = el('invoiceDate').value || '-';
+      const billTo = el('billTo').value.trim() || 'Client details will appear here.';
+      const desc = el('itemDesc').value || 'Service';
+      const qty = Number(el('itemQty').value || 0);
+      const rate = Number(el('itemRate').value || 0);
+      const taxPct = Number(el('taxPercent').value || 0);
+      const amount = qty * rate;
+      const tax = amount * (taxPct / 100);
+      const total = amount + tax;
 
-                cursorOutline.animate({
-                    left: `${posX}px`,
-                    top: `${posY}px`
-                }, { duration: 500, fill: "forwards" });
-            });
+      const selected = accountsDb.default[Number(el('accountSelect').value) || 0];
 
-            const interactables = document.querySelectorAll('a, .skill-card, .contact, .project-card, .scroll-down, .btn, input, textarea');
-            interactables.forEach(el => {
-                el.addEventListener('mouseenter', () => {
-                    cursorOutline.style.width = '60px';
-                    cursorOutline.style.height = '60px';
-                    cursorOutline.style.backgroundColor = 'rgba(0, 212, 255, 0.1)';
-                });
-                el.addEventListener('mouseleave', () => {
-                    cursorOutline.style.width = '40px';
-                    cursorOutline.style.height = '40px';
-                    cursorOutline.style.backgroundColor = 'transparent';
-                });
-            });
-        }
+      el('metaBlock').innerHTML = `Invoice No: <strong>${invNo}</strong><br>Date: <strong>${date}</strong><br>Currency: <strong>INR (₹)</strong>`;
+      el('fromBlock').innerHTML = `<strong>${company}</strong><br>${selected.address}<br>GSTIN: ${selected.gst}`;
+      el('toBlock').innerHTML = billTo.replace(/\n/g, '<br>');
+      el('lineItems').innerHTML = `
+        <tr>
+          <td>${desc}</td>
+          <td>${qty}</td>
+          <td>${money(rate)}</td>
+          <td>${money(amount)}</td>
+        </tr>`;
 
-        // --- Scroll Reveal Animation Logic ---
-        function reveal() {
-            var reveals = document.querySelectorAll(".reveal");
-            for (var i = 0; i < reveals.length; i++) {
-                var windowHeight = window.innerHeight;
-                var elementTop = reveals[i].getBoundingClientRect().top;
-                var elementVisible = 80; 
+      el('totals').innerHTML = `
+        <div><span>Subtotal</span><span>${money(amount)}</span></div>
+        <div><span>Tax (${taxPct}%)</span><span>${money(tax)}</span></div>
+        <div><strong>Total</strong><strong>${money(total)}</strong></div>`;
 
-                if (elementTop < windowHeight - elementVisible) {
-                    reveals[i].classList.add("active");
-                }
-            }
-        }
-        window.addEventListener("scroll", reveal);
-        reveal(); // Trigger once on load
+      const note = el('notes').value.trim() || '-';
+      el('noteBlock').textContent = `Notes: ${note}`;
+    }
 
-        // --- Smooth Scroll for anchor links ---
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-    </script>
+    el('sendOtp').addEventListener('click', () => {
+      const identity = el('identity').value.trim();
+      if (!identity) return showStatus('Please enter email or mobile number first.', true);
+
+      otpCode = String(Math.floor(100000 + Math.random() * 900000));
+      showStatus(`OTP sent successfully. Demo OTP: ${otpCode}`);
+    });
+
+    el('verifyOtp').addEventListener('click', () => {
+      const entered = el('otp').value.trim();
+      if (!otpCode) return showStatus('Send OTP before verification.', true);
+      if (entered !== otpCode) return showStatus('Invalid OTP. Try again.', true);
+
+      verified = true;
+      loadAccounts();
+      showStatus('Verification complete. You can now generate bills in printable, PDF, and share-link format.');
+    });
+
+    el('resetSession').addEventListener('click', () => {
+      verified = false;
+      otpCode = null;
+      el('accountSelect').innerHTML = '<option>Login first to load accounts</option>';
+      el('accountSelect').disabled = true;
+      showStatus('Session reset complete.');
+    });
+
+    el('accountSelect').addEventListener('change', updateAccountDetails);
+
+    ['companyName','invoiceNo','invoiceDate','billTo','itemDesc','itemQty','itemRate','taxPercent','notes']
+      .forEach(id => el(id).addEventListener('input', renderInvoice));
+
+    el('logoUpload').addEventListener('change', (event) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const logo = el('logoPreview');
+        logo.src = reader.result;
+        logo.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    });
+
+    el('generateInvoice').addEventListener('click', () => {
+      if (!verified) return showStatus('Please verify OTP to generate invoices.', true);
+      renderInvoice();
+      showStatus('Invoice generated successfully.');
+    });
+
+    el('printInvoice').addEventListener('click', () => {
+      if (!verified) return showStatus('Verify OTP before printing.', true);
+      window.print();
+    });
+
+    el('downloadPdf').addEventListener('click', () => {
+      if (!verified) return showStatus('Verify OTP before PDF export.', true);
+      const html = '<!doctype html><html><head><meta charset="utf-8"><title>Invoice</title></head><body>' + el('invoicePreview').outerHTML + '</body></html>';
+      const blob = new Blob([html], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = (el('invoiceNo').value || 'invoice') + '.pdf';
+      a.click();
+      URL.revokeObjectURL(url);
+      showStatus('PDF file generated (browser-compatible download).');
+    });
+
+    el('createLink').addEventListener('click', async () => {
+      if (!verified) return showStatus('Verify OTP before creating online link.', true);
+      const shareData = {
+        invoiceNo: el('invoiceNo').value,
+        date: el('invoiceDate').value,
+        company: el('companyName').value,
+        total: el('totals').innerText.replace(/\s+/g, ' ').trim()
+      };
+
+      const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(shareData))));
+      const link = `${location.origin}${location.pathname}#invoice=${encoded}`;
+      const holder = el('shareLink');
+      holder.style.display = 'block';
+      holder.textContent = `Online invoice link: ${link}`;
+
+      try { await navigator.clipboard.writeText(link); } catch (_) {}
+      showStatus('Online link created and copied (if clipboard permission is available).');
+    });
+
+    renderInvoice();
+  </script>
 </body>
 </html>
