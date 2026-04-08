@@ -1,0 +1,6 @@
+@media (max-width: 768px) {
+    .hero { padding-top: 80px; min-height: 100vh; }
+    .cyber-line { opacity: 0.1 !important; }
+    .cursor-dot, .cursor-outline { display: none !important; }
+    * { cursor: auto !important; }
+}
