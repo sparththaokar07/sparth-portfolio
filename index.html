@@ -29,6 +29,26 @@
             overflow-x: hidden;
         }
 
+        // Add typing animation to hero title
+function typeWriter(element, text, speed = 100) {
+    let i = 0;
+    element.innerHTML = '';
+    function type() {
+        if (i < text.length) {
+            element.innerHTML += text.charAt(i);
+            i++;
+            setTimeout(type, speed);
+        }
+    }
+    type();
+}
+
+// Usage after DOM loads
+window.addEventListener('load', () => {
+    const heroTitle = document.querySelector('.hero-title');
+    typeWriter(heroTitle, 'PraxCodez');
+});
+    
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg-dark); }
@@ -317,7 +337,7 @@
 
         <div class="bento-grid">
             <div class="bento-card hero-intro">
-                <div class="badge badge-primary">Coder • Graphic Designer • Web Maker</div>
+                <div class="badge badge-primary">Coder Â• Graphic Designer Â• Web Maker</div>
                 <h1 class="hero-title">PraxCodez</h1>
                 <p class="hero-desc">Crafting the future of web development through highly immersive, dark-aesthetic digital solutions and intelligent AI integrations. Bridging the gap between raw backend logic and striking visual design.</p>
                 <div class="hero-cta">
@@ -381,7 +401,7 @@
 
         <div class="section-header reveal active" id="projects">
             <h2 class="section-title"><i class="fas fa-laptop-code"></i> Featured Projects</h2>
-            <p class="section-subtitle">A showcase of my best work — from AI platforms to full-stack applications.</p>
+            <p class="section-subtitle">A showcase of my best work Â— from AI platforms to full-stack applications.</p>
         </div>
         <div class="bento-grid reveal active">
             
@@ -573,7 +593,7 @@
         <p style="font-family: 'Orbitron', monospace; font-size: 0.85rem; color: #777; letter-spacing: 2px; text-transform: uppercase;">
             Directed and Managed by <span style="color: var(--primary); font-weight: 700; text-shadow: 0 0 10px rgba(0,212,255,0.6);">PARTH SHRIKANT THAOKAR</span>
         </p>
-        <p style="font-size: 0.8rem; color: #555; margin-top: 1rem; letter-spacing: 0.5px;">© 2026 PraxCodez. All rights reserved.</p>
+        <p style="font-size: 0.8rem; color: #555; margin-top: 1rem; letter-spacing: 0.5px;">Â© 2026 PraxCodez. All rights reserved.</p>
     </footer>
 
     <script>
